@@ -1,0 +1,33 @@
+.scheduleCalendar.ant-picker-calendar {
+    padding: 20px;
+}
+.schedule .ant-table-thead > tr > th .ant-table-header-column {
+    width: 100%;
+}
+.schedule .ant-table-thead > tr > th {
+    padding: 16px 0;
+}
+.schedule .ant-table-bordered .ant-table-body > table {
+    border-top: none;
+}
+.header {
+    overflow: hidden;
+}
+.fakeA:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+.scheduleCalendar .ant-fullcalendar-date {
+    height: inherit!important;
+}
+.scheduleCalendar .ant-picker-calendar-date-content {
+    height: 300px!important;
+    overflow: hidden!important;
+}
+.ant-input-group-addon {
+    padding: 0!important;
+    border: none!important;
+}
+.ant-popover-inner-content {
+    padding: 0!important;
+}
