@@ -7,7 +7,7 @@ const router = new Router();
 const moment = require('moment');
 
 const connection = mysql2.createConnection({
-    host: 'localhost',
+    host: 'http://39.99.151.246:3306',
     user: 'root',
     password: 'Kaikeba@0826',
     database: 'schedule'
@@ -100,6 +100,7 @@ router.get('/getData', async ctx => {
 });
 
 router.get('/getTerm', async ctx => {
+    console.log("getTerm....")
     const [rows] = await connection.promise().query(`SELECT \`term\` FROM \`schedule\``);
     ctx.body = rows.map(item => item.term);
 });
@@ -253,4 +254,6 @@ router.get('/getHolidayList&Range', async ctx => {
 });
 
 app.use(router.routes());
-app.listen(4567);
+app.listen(4567,function(){
+    console.log("server run at port 4567");
+});
