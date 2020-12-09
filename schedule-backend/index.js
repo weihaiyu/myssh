@@ -7,7 +7,7 @@ const router = new Router();
 const moment = require('moment');
 
 const connection = mysql2.createConnection({
-    host: 'localhost:3306',
+    host: 'localhost',
     user: 'root',
     password: 'Kaikeba@0826',
     database: 'schedule'
