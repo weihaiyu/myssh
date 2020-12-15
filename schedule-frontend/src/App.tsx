@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useMemo, useRef} from 'react';
-import {Switch, Route, Redirect} from 'react-router-dom';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import './App.css';
 import {
 	Layout,
@@ -16,13 +16,13 @@ import Schedule from "./component/Schedule";
 import axios from "axios";
 import LessonChange from "./component/LessonChange";
 import Teacher from "./component/Teacher";
-import moment, {Moment} from 'moment';
-import {downloadExl, isHoliday, returnWeekday, throttle, translateData} from "./utils/utils";
+import moment, { Moment } from 'moment';
+import { downloadExl, isHoliday, returnWeekday, throttle, translateData } from "./utils/utils";
 import MenuList from "./component/MenuList";
 import CalcTime from "./component/CalcTime";
 import Holiday from "./component/Holiday";
 
-const {Header, Sider, Content} = Layout;
+const { Header, Sider, Content } = Layout;
 
 let cancel: any = [];
 
@@ -42,7 +42,7 @@ function getData(setData, term, teacher) {
 			cancel.push(c);
 		})
 	})
-		.then(({data}) => {
+		.then(({ data }) => {
 			if (data.code) {
 				setData(data.data);
 			}
@@ -51,12 +51,12 @@ function getData(setData, term, teacher) {
 
 const formItemLayout = {
 	labelCol: {
-		xs: {span: 24},
-		sm: {span: 8},
+		xs: { span: 24 },
+		sm: { span: 8 },
 	},
 	wrapperCol: {
-		xs: {span: 24},
-		sm: {span: 16},
+		xs: { span: 24 },
+		sm: { span: 16 },
 	},
 };
 
@@ -68,7 +68,7 @@ function addAllDay(now, end, data) {
 		now.add(1, 'd');
 		loop(now);
 	}
-	
+
 	loop(now);
 }
 
@@ -103,7 +103,7 @@ const App: React.FC = () => {
 	const [data, setData] = useState();
 	const [off, setOff] = useState(false);
 	const banner = useRef<any>(null);
-	const page = ({keyCode}) => {
+	const page = ({ keyCode }) => {
 		switch (keyCode) {
 			case 37:
 				banner.current.prev()
@@ -114,18 +114,23 @@ const App: React.FC = () => {
 		}
 	};
 	useEffect(() => {
+		// 渲染完毕后就删除本地缓存
+		localStorage.removeItem('current');
+		localStorage.removeItem('data');
+		localStorage.removeItem('list');
+
 		axios.get('/getTeacherColor', {
 			cancelToken: new axios.CancelToken((c) => {
 				cancel.push(c);
 			})
 		})
-			.then(({data}) => {
+			.then(({ data }) => {
 				setTeacherColor(data.data)
 			})
 			.catch(e => {
 			});
 		axios.get('/getHolidayList&Range')
-			.then(({data}) => {
+			.then(({ data }) => {
 				for (const dataKey in data) {
 					localStorage.setItem('holiday' + dataKey.substr(0, 1).toUpperCase() + dataKey.substr(1), JSON.stringify(data[dataKey]))
 				}
@@ -138,7 +143,7 @@ const App: React.FC = () => {
 				cancel.push(c);
 			})
 		})
-			.then(({data}) => {
+			.then(({ data }) => {
 				// @ts-ignore
 				setAllTermList([...data]);
 			});
@@ -164,12 +169,12 @@ const App: React.FC = () => {
 	return (
 		<Layout className="App">
 			<Header className='header'>
-				<div style={{float: 'left'}}>
-					<img src={require('./img/img_kaikeba_logo_blue_new.png')} height={52} alt=''/>
+				<div style={{ float: 'left' }}>
+					<img src={require('./img/img_kaikeba_logo_blue_new.png')} height={52} alt='' />
 				</div>
-				<div style={{float: 'right'}}>
+				<div style={{ float: 'right' }}>
 					<Button
-						style={{marginRight: 20}}
+						style={{ marginRight: 20 }}
 						type='primary'
 						onClick={() => {
 							setVisible(true);
@@ -186,7 +191,7 @@ const App: React.FC = () => {
 						编辑课程
 					</Button>*/}
 					<Button
-						style={{marginRight: 20}}
+						style={{ marginRight: 20 }}
 						type='primary'
 						onClick={() => {
 							setSingleVisible(true)
@@ -195,7 +200,7 @@ const App: React.FC = () => {
 						添加单节课程
 					</Button>
 					<Button
-						style={{marginRight: 20}}
+						style={{ marginRight: 20 }}
 						type='primary'
 						danger
 						onClick={() => {
@@ -210,7 +215,7 @@ const App: React.FC = () => {
 						onClick={() => {
 							window.addEventListener('keydown', page);
 							setOff(true)
-							
+
 							Modal.info({
 								title: '使用文档',
 								content: <Carousel ref={banner}>
@@ -221,7 +226,7 @@ const App: React.FC = () => {
 												height: '80vh',
 												background: `url(${require('./img/' + item + '.png')})`,
 												backgroundSize: '100% 100%'
-											}}/>
+											}} />
 										</div>)
 									}
 								</Carousel>,
@@ -239,7 +244,7 @@ const App: React.FC = () => {
 			</Header>
 			<Layout>
 				<Sider>
-					<MenuList/>
+					<MenuList />
 				</Sider>
 				<Content
 					style={{
@@ -276,17 +281,17 @@ const App: React.FC = () => {
 							path='/calculate'
 							exact
 							component={() => (
-								<CalcTime/>
+								<CalcTime />
 							)}
 						/>
 						<Route
 							path='/holiday'
 							exact
 							component={() => (
-								<Holiday/>
+								<Holiday />
 							)}
 						/>
-						<Redirect from='/' to='/schedule'/>
+						<Redirect from='/' to='/schedule' />
 					</Switch>
 				</Content>
 			</Layout>
@@ -307,7 +312,7 @@ const App: React.FC = () => {
 				}}
 				onOk={() => {
 					axios.get(`/getData?term=${exportTerm}&teacher=全部`)
-						.then(({data}) => {
+						.then(({ data }) => {
 							let arr = [];
 							let res = data.data;
 							let first = moment(Object.entries(res)[0][0]);
@@ -412,7 +417,7 @@ const App: React.FC = () => {
 									<DatePicker
 										value={moment(singleData[item])}
 										onChange={(val) => {
-											setSingleData({...singleData, date: (val as Moment).format('YYYY-MM-DD')});
+											setSingleData({ ...singleData, date: (val as Moment).format('YYYY-MM-DD') });
 										}}
 									/> :
 									''
@@ -422,8 +427,8 @@ const App: React.FC = () => {
 									<Input
 										value={singleData[item] as string}
 										// @ts-ignore
-										onChange={throttle(({target: {value}}) => {
-											setSingleData({...singleData, lesson: value});
+										onChange={throttle(({ target: { value } }) => {
+											setSingleData({ ...singleData, lesson: value });
 										})}
 									/> :
 									''
@@ -433,7 +438,7 @@ const App: React.FC = () => {
 									<Select
 										value={singleData[item] as string}
 										onChange={(val) => {
-											setSingleData({...singleData, [item]: val});
+											setSingleData({ ...singleData, [item]: val });
 										}}
 									>
 										{
@@ -453,8 +458,8 @@ const App: React.FC = () => {
 								item === 'replace' ?
 									<Radio.Group
 										value={singleData[item]}
-										onChange={({target: {value}}) => {
-											setSingleData({...singleData, replace: value})
+										onChange={({ target: { value } }) => {
+											setSingleData({ ...singleData, replace: value })
 										}}
 									>
 										<Radio

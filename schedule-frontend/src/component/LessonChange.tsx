@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
+import React, { useEffect, useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import moment from "moment";
 import {
 	Button,
@@ -13,17 +13,17 @@ import {
 	InputNumber,
 	Select
 } from "antd";
-import {LoadingOutlined} from "@ant-design/icons";
-import {getLessonDay} from "../utils/utils";
+import { LoadingOutlined } from "@ant-design/icons";
+import { getLessonDay } from "../utils/utils";
 
 const formItemLayout = {
 	labelCol: {
-		xs: {span: 24},
-		sm: {span: 8},
+		xs: { span: 24 },
+		sm: { span: 8 },
 	},
 	wrapperCol: {
-		xs: {span: 24},
-		sm: {span: 16},
+		xs: { span: 24 },
+		sm: { span: 16 },
 	},
 };
 
@@ -33,7 +33,9 @@ let lessonModule: any = {
 	'es6基础': 1,
 	'面向对象': 4,
 	'es6高阶': 2,
+	'promise原理': 1,
 	'git': 1,
+	'函数式编程': 1,
 	'node': 4,
 	'前后端交互': 4,
 	'webpack': 2,
@@ -47,6 +49,7 @@ let lessonModule: any = {
 	'面试': 4
 };
 lessonModule = Object.entries(lessonModule);
+console.log('lessonModule', lessonModule);
 
 function getTeacher(lesson, lessonTeacher) {
 	let teacher = '';
@@ -61,19 +64,21 @@ let lessonTeacher: any = {
 	'es6基础': '海哥哥',
 	'面向对象': '海哥哥',
 	'es6高阶': '海哥哥',
+	'promise原理': '海哥哥',
 	'git': '海哥哥',
+	'函数式编程': '海哥哥',
 	'node': '钟老师',
 	'前后端交互': '钟老师',
 	'webpack': '钟老师',
 	'vue': '效瑞老师',
 	'react': '莫莫',
-	'移动端': '莫莫',
+	'移动端': '彭小龙',
 	'd3': '李伟老师',
 	'echarts': '李伟老师',
 	'小程序': '李伟老师',
 	'面试': '不知道'
 };
-const teacherList = ['不知道', '钟老师', '莫莫', '效瑞老师', '海哥哥', '李伟老师'];
+const teacherList = ['不知道', '钟老师', '莫莫', '效瑞老师', '海哥哥', '李伟老师', '彭小龙'];
 let createLessonData = (data, startDate, term, parity, lessonTeacher) => {
 	let realData: any[] = [];
 	Object.entries(data).forEach(item => {
@@ -82,11 +87,11 @@ let createLessonData = (data, startDate, term, parity, lessonTeacher) => {
 			realData.push(item[0] + '-' + 0 + i);
 		}
 	});
-// @ts-ignore
+	// @ts-ignore
 	let lessonDays = getLessonDay(startDate, parity, Object.values(data).reduce((prev, now) => prev as number + now as number));
 	return Object.fromEntries(lessonDays.map((item, index) => [
 		[item],
-		[{lesson: realData[index], teacher: getTeacher(realData[index], lessonTeacher), term}]
+		[{ lesson: realData[index], teacher: getTeacher(realData[index], lessonTeacher), term }]
 	]));
 }
 
@@ -99,7 +104,7 @@ const LessonChange = props => {
 	const [loading, setLoading] = useState(false);
 	const [current, setCurrent] = useState(Number(localStorage.getItem('current')) || 0);
 	const [list, setList] = useState(JSON.parse(localStorage.getItem('list') || JSON.stringify(lessonTeacher)));
-	const {visible, setVisible, addLesson, getData, setData, term: propTerm, teacher} = props;
+	const { visible, setVisible, addLesson, getData, setData, term: propTerm, teacher } = props;
 	useEffect(() => {
 		localStorage.setItem('data', JSON.stringify(lessonData));
 	}, [lessonData]);
@@ -113,17 +118,18 @@ const LessonChange = props => {
 			onCancel={() => {
 				setVisible(false);
 			}}
+			width={620}
 			footer={<div>
 				{
 					current > 0 &&
-						<Button
-							type='primary'
-							onClick={() => {
-								let num = current;
-								setCurrent(--num);
-							}}
-						>
-							上一步
+					<Button
+						type='primary'
+						onClick={() => {
+							let num = current;
+							setCurrent(--num);
+						}}
+					>
+						上一步
 						</Button>
 				}
 				{
@@ -151,7 +157,7 @@ const LessonChange = props => {
 							case 2:
 								setDisabled(true);
 								setLoading(true);
-								const {data} = await addLesson({
+								const { data } = await addLesson({
 									term,
 									data: createLessonData(Object.fromEntries(lessonData), date, term, parity, list)
 								});
@@ -190,21 +196,21 @@ const LessonChange = props => {
 				</Button>
 			</div>}
 		>
-			<div style={{padding: 20}}>
+			<div style={{ padding: 20 }}>
 				<Steps
 					current={current}
 				>
 					{
 						steps.map(item => (
 							<Steps.Step
-								icon={(loading && (item === '调整课程时间')) ? <LoadingOutlined/> : ''}
+								icon={(loading && (item === '调整课程时间')) ? <LoadingOutlined /> : ''}
 								key={item}
 								title={item}
 							/>
 						))
 					}
 				</Steps>
-				<div style={{marginTop: 30}}>
+				<div style={{ marginTop: 30 }}>
 					<DragDropContext
 						onDragEnd={end => {
 							// 事情在这里搞 end就行 里面有source是从哪里来 destination是去哪儿 然后对数据处理一下看看能不能行
@@ -219,13 +225,13 @@ const LessonChange = props => {
 									<Form.Item label="期数">
 										<Input value={term} onChange={(e) => {
 											setTerm(e.target.value);
-										}}/>
+										}} />
 									</Form.Item>
 									<Form.Item label="课程起始时间">
 										<DatePicker value={date} onChange={date => {
 											// @ts-ignore
 											setDate(date);
-										}}/>
+										}} />
 									</Form.Item>
 									<Form.Item label="上课时间">
 										<Select
@@ -329,7 +335,7 @@ const LessonChange = props => {
 																				// @ts-ignore
 																				item[0]
 																			}
-																		
+
 																		</List.Item>
 																	</div>
 																)}
@@ -339,7 +345,7 @@ const LessonChange = props => {
 												</List>
 												{provided.placeholder}
 											</div>
-										
+
 										)
 									}
 								</Droppable>
