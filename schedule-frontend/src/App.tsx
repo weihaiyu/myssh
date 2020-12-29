@@ -115,9 +115,18 @@ const App: React.FC = () => {
 	};
 	useEffect(() => {
 		// 渲染完毕后就删除本地缓存
+		localStorage.removeItem('Console');
+		localStorage.removeItem('Console/Mode');
+		localStorage.removeItem('NavigationWidth');
+		localStorage.removeItem('date');
+		localStorage.removeItem('length');
+		localStorage.removeItem('parity');
+		localStorage.removeItem('term');
 		localStorage.removeItem('current');
 		localStorage.removeItem('data');
 		localStorage.removeItem('list');
+		localStorage.removeItem('holidayRange');
+		localStorage.removeItem('holidayList');
 
 		axios.get('/getTeacherColor', {
 			cancelToken: new axios.CancelToken((c) => {
